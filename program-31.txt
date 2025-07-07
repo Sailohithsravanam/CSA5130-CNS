@@ -1,0 +1,25 @@
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+
+block_size = 16
+key = bytes([0]*block_size)
+
+cipher = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend()).encryptor()
+L = cipher.update(bytes([0]*block_size)) + cipher.finalize()
+
+Rb = 0x87
+
+L_int = int.from_bytes(L, 'big')
+K1_int = (L_int << 1) & (2**128 - 1)
+if (L[0] & 0x80):
+    K1_int ^= Rb
+K1 = K1_int.to_bytes(16, 'big')
+
+K2_int = (K1_int << 1) & (2**128 - 1)
+if (K1[0] & 0x80):
+    K2_int ^= Rb
+K2 = K2_int.to_bytes(16, 'big')
+
+print("L  :", L.hex())
+print("K1 :", K1.hex())
+print("K2 :", K2.hex())

@@ -1,0 +1,26 @@
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.backends import default_backend
+import os
+
+key = os.urandom(16)
+iv = os.urandom(16)
+data = b"MessageNeedingPad"
+
+padder = padding.PKCS7(128).padder()
+padded = padder.update(data) + padder.finalize()
+
+cipher_ecb = Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend()).encryptor()
+cipher_cbc = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend()).encryptor()
+cipher_cfb = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend()).encryptor()
+
+ecb_encrypted = cipher_ecb.update(padded) + cipher_ecb.finalize()
+cbc_encrypted = cipher_cbc.update(padded) + cipher_cbc.finalize()
+cfb_encrypted = cipher_cfb.update(data) + cipher_cfb.finalize()
+
+print("ECB:", ecb_encrypted.hex())
+print("CBC:", cbc_encrypted.hex())
+print("CFB:", cfb_encrypted.hex())
+
+# Why pad even when not needed?
+# → Prevent padding oracle attacks; ensures consistent message structure.

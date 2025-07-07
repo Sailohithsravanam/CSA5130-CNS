@@ -1,0 +1,19 @@
+from cryptography.hazmat.primitives.asymmetric import dsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import utils
+
+message = b"Test message DSA"
+
+private_key = dsa.generate_private_key(key_size=1024)
+hash1 = hashes.Hash(hashes.SHA256())
+hash1.update(message)
+digest = hash1.finalize()
+
+signature1 = private_key.sign(message, hashes.SHA256())
+
+# Generate a different signature for the same message
+signature2 = private_key.sign(message, hashes.SHA256())
+
+print("DSA Signature 1:", signature1.hex())
+print("DSA Signature 2:", signature2.hex())
+print("Are Signatures Equal?:", signature1 == signature2)

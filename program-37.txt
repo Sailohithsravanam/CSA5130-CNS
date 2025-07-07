@@ -1,0 +1,25 @@
+from collections import Counter
+
+ciphertext = "ZOLSS PZ AOL SHYLZ ALHJOLY"  # Example monoalphabetic substitution
+
+# English letter frequency order
+english_freq = 'ETAOINSHRDLCUMWFGYPBVKJXQZ'
+
+# Count letter frequency in ciphertext
+counts = Counter(c for c in ciphertext if c.isalpha())
+most_common = [item[0] for item in counts.most_common()]
+
+# Map cipher letters to English frequency letters
+mapping = dict(zip(most_common, english_freq))
+
+plaintext = ""
+for c in ciphertext:
+    if c.isalpha():
+        plaintext += mapping.get(c.upper(), '?')
+    else:
+        plaintext += c
+
+print("Best Guess Decryption:", plaintext)
+
+# Note: This is a rough frequency match, not 100% accurate.
+# For top 10 guesses, permutation logic or statistical scoring is needed.

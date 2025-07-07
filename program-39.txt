@@ -1,0 +1,25 @@
+from collections import Counter
+
+ciphertext = "ZOLSS"  # Example Caesar (Additive) Cipher
+
+freq_order = 'ETAOINSHRDLCUMWFGYPBVKJXQZ'
+cipher_freq = Counter(c for c in ciphertext if c.isalpha())
+most_common_cipher = cipher_freq.most_common(1)[0][0]
+
+guesses = []
+
+for i in range(26):
+    decrypted = ""
+    for char in ciphertext:
+        if char.isalpha():
+            c = ord(char.upper()) - ord('A')
+            p = (c - i) % 26
+            decrypted += chr(p + ord('A'))
+        else:
+            decrypted += char
+    guesses.append((i, decrypted))
+
+# Top 10 guesses
+print("Top 10 Possible Decryptions (Additive):")
+for i in range(10):
+    print(f"Key={guesses[i][0]:2d} → {guesses[i][1]}")

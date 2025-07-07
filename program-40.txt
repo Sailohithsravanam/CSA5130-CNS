@@ -1,0 +1,27 @@
+from itertools import permutations
+from collections import Counter
+
+ciphertext = "ZOLSS PZ AOL SHYLZ ALHJOLY"
+
+# Most frequent cipher letters
+counts = Counter(c for c in ciphertext if c.isalpha())
+most_common = [item[0] for item in counts.most_common(6)]
+
+# Try mapping to 6 most common English letters
+english_freq = 'ETAOIN'
+
+top_plaintexts = []
+for perm in permutations(english_freq):
+    mapping = dict(zip(most_common, perm))
+    decrypted = ""
+    for c in ciphertext:
+        if c.isalpha():
+            decrypted += mapping.get(c.upper(), '?')
+        else:
+            decrypted += c
+    top_plaintexts.append(decrypted)
+
+# Show top 5 guesses
+print("Top 5 Frequency Attack Results:")
+for i in range(5):
+    print(f"{i+1}: {top_plaintexts[i]}")

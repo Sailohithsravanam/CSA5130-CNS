@@ -1,0 +1,26 @@
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.backends import default_backend
+
+# 3DES requires key lengths of 16 or 24 bytes
+key = b'1234567890abcdef12345678'  # 24 bytes for 3DES
+data = b'HelloDESData'
+
+# Pad the data to block size (64 bits)
+padder = padding.PKCS7(64).padder()
+padded_data = padder.update(data) + padder.finalize()
+
+# Encrypt with 3DES in ECB mode
+cipher_enc = Cipher(algorithms.TripleDES(key), modes.ECB(), backend=default_backend()).encryptor()
+ciphertext = cipher_enc.update(padded_data) + cipher_enc.finalize()
+
+# Decrypt with 3DES in ECB mode
+cipher_dec = Cipher(algorithms.TripleDES(key), modes.ECB(), backend=default_backend()).decryptor()
+decrypted_padded = cipher_dec.update(ciphertext) + cipher_dec.finalize()
+
+# Unpad
+unpadder = padding.PKCS7(64).unpadder()
+plaintext = unpadder.update(decrypted_padded) + unpadder.finalize()
+
+print("Encrypted:", ciphertext.hex())
+print("Decrypted:", plaintext.decode())

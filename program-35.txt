@@ -1,0 +1,14 @@
+import random
+
+plaintext = "HELLO"
+key_stream = [random.randint(0, 25) for _ in plaintext]
+ciphertext = ""
+
+for i in range(len(plaintext)):
+    p = ord(plaintext[i]) - ord('A')
+    c = (p + key_stream[i]) % 26
+    ciphertext += chr(c + ord('A'))
+
+print("Plaintext :", plaintext)
+print("Key Stream:", key_stream)
+print("Ciphertext:", ciphertext)

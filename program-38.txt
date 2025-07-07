@@ -1,0 +1,20 @@
+import numpy as np
+
+# Plaintext and ciphertext (2-letter blocks)
+P = [[7], [4]]     # H=7, E=4
+C = [[3], [14]]    # C=3, O=14
+
+# Matrix form: K * P = C mod 26 → K = C * P^(-1) mod 26
+
+P_matrix = np.array([[7, 4], [11, 11]])  # e.g. "HELP"
+C_matrix = np.array([[3, 14], [11, 13]]) # e.g. "COOL"
+
+# Inverse of P mod 26
+def mod_inv_matrix(mat, mod):
+    det = int(round(np.linalg.det(mat)))
+    det_inv = pow(det % mod, -1, mod)
+    adj = np.round(det * np.linalg.inv(mat)).astype(int) % mod
+    return (det_inv * adj) % mod
+
+K = (C_matrix @ mod_inv_matrix(P_matrix, 26)) % 26
+print("Recovered Key Matrix (mod 26):\n", K.astype(int))
